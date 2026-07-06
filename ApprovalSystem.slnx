@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="ApprovalSystem.Api/ApprovalSystem.Api.csproj" />
+  <Project Path="ApprovalSystem.Application/ApprovalSystem.Application.csproj" />
+  <Project Path="ApprovalSystem.Core/ApprovalSystem.Core.csproj" />
+  <Project Path="ApprovalSystem.Infrastructure/ApprovalSystem.Infrastructure.csproj" />
+</Solution>
