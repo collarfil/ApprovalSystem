@@ -82,4 +82,24 @@ public class ApprovalStepRepository : IApprovalStepRepository
 
     await Task.CompletedTask;
 }
+
+
+public async Task<List<ApprovalStep>>
+    GetPendingApprovalsAsync(Guid approverId)
+{
+    return await _context.ApprovalSteps
+
+        .Include(x => x.Request)
+            .ThenInclude(r => r.RequestedBy)
+
+        .Include(x => x.AssignedToUser)
+
+        .Where(x =>
+            x.AssignedToUserId == approverId &&
+            x.Status == ApprovalStatus.Pending)
+
+        .OrderBy(x => x.Request.CreatedAt)
+
+        .ToListAsync();
+}
 }

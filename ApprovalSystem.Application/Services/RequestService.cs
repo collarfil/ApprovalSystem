@@ -19,54 +19,57 @@ public class RequestService : IRequestService
         _workflowEngine = workflowEngine;
     }
 
-    public async Task<RequestResponseDto> CreateAsync(
-        CreateRequestDto dto)
+    public async Task<RequestResponseDto> CreateAsync(CreateRequestDto dto, Guid requestedById)
+{
+    var request = new Request
     {
-        var request = new Request
-        {
-            Id = Guid.NewGuid(),
-            Title = dto.Title,
-            Description = dto.Description,
-            Amount = dto.Amount,
-            WorkflowDefinitionId = dto.WorkflowDefinitionId,
-            Status = RequestStatus.Pending,
-            CreatedAt = DateTime.UtcNow
-        };
+        Id = Guid.NewGuid(),
+        Title = dto.Title,
+        Description = dto.Description,
+        Amount = dto.Amount,
+        WorkflowDefinitionId = dto.WorkflowDefinitionId,
+        RequestedById = requestedById,
+        Status = RequestStatus.Pending,
+        CreatedAt = DateTime.UtcNow
+    };
 
-        await _requestRepository.AddAsync(request);
+    // 1. Persist base request
+    await _requestRepository.AddAsync(request);
+    await _requestRepository.SaveChangesAsync();
+
+    // 2. Safely trigger engine and capture execution blocks
+    try
+    {
+        await _workflowEngine.StartWorkflowAsync(request);
+    }
+    catch (Exception ex)
+    {
+        // Change the request status to indicate a configuration breakdown
+        request.Status = RequestStatus.Escalated; 
+        await _requestRepository.UpdateAsync(request);
         await _requestRepository.SaveChangesAsync();
 
-        await _workflowEngine.StartWorkflowAsync(request);
-
-        return Map(request);
+        throw new Exception($"Workflow Engine failed to initialize step: {ex.Message}. Internal Details: {ex.InnerException?.Message}", ex);
     }
 
+    return Map(request);
+}
     public async Task<IEnumerable<RequestResponseDto>> GetAllAsync()
     {
         var requests = await _requestRepository.GetAllAsync();
-
         return requests.Select(Map);
     }
 
-    public async Task<RequestResponseDto?> GetByIdAsync(
-        Guid id)
+    public async Task<RequestResponseDto?> GetByIdAsync(Guid id)
     {
-        var request =
-            await _requestRepository.GetRequestWithStepsAsync(id);
-
-        if (request == null)
-            return null;
-
-        return Map(request);
+        var request = await _requestRepository.GetRequestWithStepsAsync(id);
+        return request == null ? null : Map(request);
     }
 
-    public async Task<RequestResponseDto> UpdateAsync(
-        Guid id,
-        UpdateRequestDto dto)
+    public async Task<RequestResponseDto> UpdateAsync(Guid id, UpdateRequestDto dto)
     {
-        var request =
-            await _requestRepository.GetByIdAsync(id)
-            ?? throw new Exception("Request not found");
+        var request = await _requestRepository.GetByIdAsync(id)
+            ?? throw new KeyNotFoundException($"Request with ID {id} not found.");
 
         request.Title = dto.Title;
         request.Description = dto.Description;
@@ -80,12 +83,10 @@ public class RequestService : IRequestService
 
     public async Task DeleteAsync(Guid id)
     {
-        var request =
-            await _requestRepository.GetByIdAsync(id);
+        var request = await _requestRepository.GetByIdAsync(id);
+        if (request == null) return;
 
-        if (request == null)
-            return;
-
+        // Soft delete execution via request status update
         request.Status = RequestStatus.Cancelled;
 
         await _requestRepository.UpdateAsync(request);

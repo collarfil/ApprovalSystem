@@ -13,3 +13,4 @@
 /Users/collinsfekix/projects/ApprovalSystem/ApprovalSystem.Application/obj/Debug/net10.0/refint/ApprovalSystem.Application.dll
 /Users/collinsfekix/projects/ApprovalSystem/ApprovalSystem.Application/obj/Debug/net10.0/ApprovalSystem.Application.pdb
 /Users/collinsfekix/projects/ApprovalSystem/ApprovalSystem.Application/obj/Debug/net10.0/ref/ApprovalSystem.Application.dll
+/Users/collinsfekix/projects/ApprovalSystem/ApprovalSystem.Application/obj/Debug/net10.0/ApprovalSystem.Application.sourcelink.json

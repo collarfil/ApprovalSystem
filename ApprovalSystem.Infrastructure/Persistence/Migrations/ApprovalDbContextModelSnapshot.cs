@@ -205,6 +205,9 @@ namespace ApprovalSystem.Infrastructure.Persistence.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<Guid?>("CurrentApprovalStepId")
+                        .HasColumnType("uuid");
+
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("text");
@@ -370,6 +373,10 @@ namespace ApprovalSystem.Infrastructure.Persistence.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("TargetRoleId");
+
+                    b.HasIndex("WorkflowDefinitionId");
+
                     b.ToTable("WorkflowRules");
                 });
 
@@ -501,6 +508,25 @@ namespace ApprovalSystem.Infrastructure.Persistence.Migrations
                     b.Navigation("Role");
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("ApprovalSystem.Core.Entities.WorkflowRule", b =>
+                {
+                    b.HasOne("ApprovalSystem.Core.Entities.Role", "TargetRole")
+                        .WithMany()
+                        .HasForeignKey("TargetRoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ApprovalSystem.Core.Entities.WorkflowDefinition", "WorkflowDefinition")
+                        .WithMany()
+                        .HasForeignKey("WorkflowDefinitionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("TargetRole");
+
+                    b.Navigation("WorkflowDefinition");
                 });
 
             modelBuilder.Entity("ApprovalSystem.Core.Entities.WorkflowStepDefinition", b =>

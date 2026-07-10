@@ -25,7 +25,8 @@ public interface IApprovalStepRepository
 
     Task UpdateAsync(
     ApprovalStep step);
-
     
+    Task<List<ApprovalStep>>
+    GetPendingApprovalsAsync(Guid approverId);
     Task SaveChangesAsync();
 }

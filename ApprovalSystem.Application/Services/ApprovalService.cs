@@ -1,70 +1,58 @@
 using ApprovalSystem.Application.DTOs.Approvals;
 using ApprovalSystem.Application.Interfaces;
-using ApprovalSystem.Core.Entities;
 using ApprovalSystem.Core.Interfaces;
-using ApprovalSystem.Core.Enums;
-using ApprovalSystem.Application.DTOs.Requests;
 
 namespace ApprovalSystem.Application.Services;
+
 public class ApprovalService : IApprovalService
 {
     private readonly IWorkflowEngine _workflowEngine;
     private readonly IRequestRepository _requestRepository;
+    private readonly IApprovalStepRepository _approvalStepRepository;
 
     public ApprovalService(
         IWorkflowEngine workflowEngine,
-        IRequestRepository requestRepository)
+        IRequestRepository requestRepository,
+        IApprovalStepRepository approvalStepRepository)
     {
         _workflowEngine = workflowEngine;
         _requestRepository = requestRepository;
+        _approvalStepRepository = approvalStepRepository;
     }
 
-   
-    public async Task ApproveRequestAsync(
-        Guid requestId,
-        Guid approverId,
-        string comment)
+    public async Task ApproveRequestAsync(Guid requestId, Guid approverId, string comment)
     {
         await _workflowEngine.ApproveStepAsync(requestId, approverId, comment);
-
-        var request = await _requestRepository.GetByIdAsync(requestId);
-        if (request != null)
-        {
-            request.Status = RequestStatus.Approved;
-            await _requestRepository.UpdateAsync(request);
-            await _requestRepository.SaveChangesAsync();
-        }
     }
 
-    public async Task RejectRequestAsync(
-        Guid requestId,
-        Guid approverId,
-        string reason)
+    public async Task RejectRequestAsync(Guid requestId, Guid approverId, string reason)
     {
         await _workflowEngine.RejectStepAsync(requestId, approverId, reason);
-
-        var request = await _requestRepository.GetByIdAsync(requestId);
-        if (request != null)
-        {
-            request.Status = RequestStatus.Rejected;
-            await _requestRepository.UpdateAsync(request);
-            await _requestRepository.SaveChangesAsync();
-        }
     }
 
-    public async Task EscalateRequestAsync(
-        Guid requestId,
-        Guid approverId,
-        string reason)
+    public async Task EscalateRequestAsync(Guid requestId, Guid approverId, string reason)
     {
         await _workflowEngine.EscalateStepAsync(requestId, approverId, reason);
+    }
 
-        var request = await _requestRepository.GetByIdAsync(requestId);
-        if (request != null)
+    public async Task<List<PendingApprovalDto>> GetPendingApprovalsAsync(Guid approverId)
+    {
+        var approvals = await _approvalStepRepository.GetPendingApprovalsAsync(approverId);
+
+        return approvals.Select(a => new PendingApprovalDto
         {
-            request.Status = RequestStatus.Escalated;
-            await _requestRepository.UpdateAsync(request);
-            await _requestRepository.SaveChangesAsync();
-        }
+            ApprovalStepId = a.Id,
+            RequestId = a.RequestId,
+            Title = a.Request.Title,
+            Description = a.Request.Description,
+            Amount = a.Request.Amount,
+            Status = a.Request.Status.ToString(),
+            StepOrder = a.StepOrder,
+            RequestedById = a.Request.RequestedById,
+            RequestedByName = $"{a.Request.RequestedBy.FirstName} {a.Request.RequestedBy.LastName}",
+            AssignedToUserId = a.AssignedToUserId,
+            AssignedToName = $"{a.AssignedToUser.FirstName} {a.AssignedToUser.LastName}",
+            CreatedAt = a.Request.CreatedAt
+        }).ToList();
     }
 }

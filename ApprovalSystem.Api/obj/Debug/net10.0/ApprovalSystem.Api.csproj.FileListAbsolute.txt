@@ -172,3 +172,4 @@
 /Users/collinsfekix/projects/ApprovalSystem/ApprovalSystem.Api/bin/Debug/net10.0/BouncyCastle.Cryptography.dll
 /Users/collinsfekix/projects/ApprovalSystem/ApprovalSystem.Api/bin/Debug/net10.0/MailKit.dll
 /Users/collinsfekix/projects/ApprovalSystem/ApprovalSystem.Api/bin/Debug/net10.0/MimeKit.dll
+/Users/collinsfekix/projects/ApprovalSystem/ApprovalSystem.Api/obj/Debug/net10.0/ApprovalSystem.Api.sourcelink.json

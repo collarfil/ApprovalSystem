@@ -36,6 +36,15 @@ public class ApprovalController : ControllerBase
         });
     }
 
+[HttpGet("pending/{approverId}")]
+public async Task<IActionResult> GetPending(
+    Guid approverId)
+{
+    return Ok(
+        await _approvalService.GetPendingApprovalsAsync(
+            approverId));
+}
+
     [HttpPost("reject")]
     public async Task<IActionResult> Reject(
         RejectRequestDto dto)
@@ -65,4 +74,5 @@ public class ApprovalController : ControllerBase
             message = "Request escalated successfully."
         });
     }
+    
 }

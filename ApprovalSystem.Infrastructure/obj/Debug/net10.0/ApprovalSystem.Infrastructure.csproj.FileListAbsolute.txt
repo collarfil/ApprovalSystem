@@ -17,3 +17,4 @@
 /Users/collinsfekix/projects/ApprovalSystem/ApprovalSystem.Infrastructure/obj/Debug/net10.0/ApprovalSystem.Infrastructure.pdb
 /Users/collinsfekix/projects/ApprovalSystem/ApprovalSystem.Infrastructure/obj/Debug/net10.0/ApprovalSystem.Infrastructure.genruntimeconfig.cache
 /Users/collinsfekix/projects/ApprovalSystem/ApprovalSystem.Infrastructure/obj/Debug/net10.0/ref/ApprovalSystem.Infrastructure.dll
+/Users/collinsfekix/projects/ApprovalSystem/ApprovalSystem.Infrastructure/obj/Debug/net10.0/ApprovalSystem.Infrastructure.sourcelink.json
