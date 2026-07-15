@@ -21,40 +21,51 @@ public class EmailService : IEmailService
     public async Task SendAsync(
         SendEmailDto dto)
     {
-        var email = new MimeMessage();
-
-        email.From.Add(
-            new MailboxAddress(
-                _smtpSettings.FromName,
-                _smtpSettings.FromEmail));
-
-        email.To.Add(
-            MailboxAddress.Parse(dto.To));
-
-        email.Subject = dto.Subject;
-
-        email.Body = new TextPart(
-            dto.IsHtml ? "html" : "plain")
+        try
         {
-            Text = dto.Body
-        };
+            var email = new MimeMessage();
 
-        using var smtp = new SmtpClient();
+            email.From.Add(
+                new MailboxAddress(
+                    _smtpSettings.FromName,
+                    _smtpSettings.FromEmail));
 
-        await smtp.ConnectAsync(
-            _smtpSettings.Host,
-            _smtpSettings.Port,
-            _smtpSettings.EnableSsl
-                ? SecureSocketOptions.StartTls
-                : SecureSocketOptions.None);
+            email.To.Add(
+                MailboxAddress.Parse(dto.To));
 
-        await smtp.AuthenticateAsync(
-            _smtpSettings.Username,
-            _smtpSettings.Password);
+            email.Subject = dto.Subject;
 
-        await smtp.SendAsync(email);
+            email.Body = new TextPart(
+                dto.IsHtml ? "html" : "plain")
+            {
+                Text = dto.Body
+            };
 
-        await smtp.DisconnectAsync(true);
+            using var smtp = new SmtpClient();
+
+            await smtp.ConnectAsync(
+                _smtpSettings.Host,
+                _smtpSettings.Port,
+                _smtpSettings.EnableSsl
+                    ? SecureSocketOptions.StartTls
+                    : SecureSocketOptions.None);
+
+            await smtp.AuthenticateAsync(
+                _smtpSettings.Username,
+                _smtpSettings.Password);
+
+            await smtp.SendAsync(email);
+
+            await smtp.DisconnectAsync(true);
+            
+            Console.WriteLine($"[EMAIL] Email sent successfully to {dto.To}");
+        }
+        catch (Exception ex)
+        {
+            // Log the error but don't throw - email is optional
+            Console.WriteLine($"[EMAIL ERROR] Failed to send email to {dto.To}: {ex.Message}");
+            // Don't re-throw - let the workflow continue
+        }
     }
 
     public async Task SendRequestSubmittedAsync(
@@ -66,13 +77,19 @@ public class EmailService : IEmailService
         {
             To = email,
             Subject = "Request Submitted",
+            IsHtml = true,
             Body =
             $"""
-            Hello {requesterName},
-
-            Your request "<b>{requestTitle}</b>" has been submitted successfully.
-
-            Status: Pending Approval.
+            <html>
+            <body>
+                <h2>Request Submitted</h2>
+                <p>Hello {requesterName},</p>
+                <p>Your request <strong>"{requestTitle}"</strong> has been submitted successfully.</p>
+                <p>Status: <strong>Pending Approval</strong></p>
+                <br/>
+                <p>Thank you,<br/>Approval System</p>
+            </body>
+            </html>
             """
         });
     }
@@ -86,16 +103,20 @@ public class EmailService : IEmailService
         {
             To = email,
             Subject = "Approval Required",
+            IsHtml = true,
             Body =
             $"""
-            Hello {approverName},
-
-            A request requires your approval.
-
-            Request:
-            <b>{requestTitle}</b>
-
-            Please log in to review it.
+            <html>
+            <body>
+                <h2>Approval Required</h2>
+                <p>Hello {approverName},</p>
+                <p>A request requires your approval.</p>
+                <p><strong>Request:</strong> {requestTitle}</p>
+                <p>Please log in to review it.</p>
+                <br/>
+                <p>Thank you,<br/>Approval System</p>
+            </body>
+            </html>
             """
         });
     }
@@ -109,15 +130,18 @@ public class EmailService : IEmailService
         {
             To = email,
             Subject = "Request Approved",
+            IsHtml = true,
             Body =
             $"""
-            Hello {requesterName},
-
-            Your request
-
-            <b>{requestTitle}</b>
-
-            has been approved.
+            <html>
+            <body>
+                <h2>Request Approved</h2>
+                <p>Hello {requesterName},</p>
+                <p>Your request <strong>"{requestTitle}"</strong> has been <strong style="color:green;">approved</strong>.</p>
+                <br/>
+                <p>Thank you,<br/>Approval System</p>
+            </body>
+            </html>
             """
         });
     }
@@ -132,19 +156,19 @@ public class EmailService : IEmailService
         {
             To = email,
             Subject = "Request Rejected",
+            IsHtml = true,
             Body =
             $"""
-            Hello {requesterName},
-
-            Your request
-
-            <b>{requestTitle}</b>
-
-            has been rejected.
-
-            Reason:
-
-            {reason}
+            <html>
+            <body>
+                <h2>Request Rejected</h2>
+                <p>Hello {requesterName},</p>
+                <p>Your request <strong>"{requestTitle}"</strong> has been <strong style="color:red;">rejected</strong>.</p>
+                <p><strong>Reason:</strong> {reason}</p>
+                <br/>
+                <p>Thank you,<br/>Approval System</p>
+            </body>
+            </html>
             """
         });
     }
@@ -157,11 +181,19 @@ public class EmailService : IEmailService
         {
             To = email,
             Subject = "Password Reset",
+            IsHtml = true,
             Body =
             $"""
-            Click the link below to reset your password.
-
-            <a href="{resetLink}">Reset Password</a>
+            <html>
+            <body>
+                <h2>Password Reset</h2>
+                <p>Click the link below to reset your password:</p>
+                <p><a href="{resetLink}">Reset Password</a></p>
+                <p>This link will expire in 24 hours.</p>
+                <br/>
+                <p>Thank you,<br/>Approval System</p>
+            </body>
+            </html>
             """
         });
     }
@@ -174,13 +206,18 @@ public class EmailService : IEmailService
         {
             To = email,
             Subject = "Verify Your Email",
+            IsHtml = true,
             Body =
             $"""
-            Click below to verify your email.
-
-            <a href="{verificationLink}">
-                Verify Email
-            </a>
+            <html>
+            <body>
+                <h2>Verify Your Email</h2>
+                <p>Click below to verify your email:</p>
+                <p><a href="{verificationLink}">Verify Email</a></p>
+                <br/>
+                <p>Thank you,<br/>Approval System</p>
+            </body>
+            </html>
             """
         });
     }

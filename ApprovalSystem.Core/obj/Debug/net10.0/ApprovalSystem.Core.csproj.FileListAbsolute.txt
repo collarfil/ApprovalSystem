@@ -5,8 +5,8 @@
 /Users/collinsfekix/projects/ApprovalSystem/ApprovalSystem.Core/obj/Debug/net10.0/ApprovalSystem.Core.AssemblyInfoInputs.cache
 /Users/collinsfekix/projects/ApprovalSystem/ApprovalSystem.Core/obj/Debug/net10.0/ApprovalSystem.Core.AssemblyInfo.cs
 /Users/collinsfekix/projects/ApprovalSystem/ApprovalSystem.Core/obj/Debug/net10.0/ApprovalSystem.Core.csproj.CoreCompileInputs.cache
+/Users/collinsfekix/projects/ApprovalSystem/ApprovalSystem.Core/obj/Debug/net10.0/ApprovalSystem.Core.sourcelink.json
 /Users/collinsfekix/projects/ApprovalSystem/ApprovalSystem.Core/obj/Debug/net10.0/ApprovalSystem.Core.dll
 /Users/collinsfekix/projects/ApprovalSystem/ApprovalSystem.Core/obj/Debug/net10.0/refint/ApprovalSystem.Core.dll
 /Users/collinsfekix/projects/ApprovalSystem/ApprovalSystem.Core/obj/Debug/net10.0/ApprovalSystem.Core.pdb
 /Users/collinsfekix/projects/ApprovalSystem/ApprovalSystem.Core/obj/Debug/net10.0/ref/ApprovalSystem.Core.dll
-/Users/collinsfekix/projects/ApprovalSystem/ApprovalSystem.Core/obj/Debug/net10.0/ApprovalSystem.Core.sourcelink.json

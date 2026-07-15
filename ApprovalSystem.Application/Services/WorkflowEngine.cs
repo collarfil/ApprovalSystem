@@ -304,157 +304,182 @@ public class WorkflowEngine : IWorkflowEngine
 
         request.CurrentApprovalStepId = approval.Id;
     }
-   
 
-
-
-private async Task NotifyApproverAsync(
-    Guid approverId,
-    Request request)
-{
-    var approver =
-        await _userRepository.GetByIdAsync(approverId);
-
-    if (approver == null)
-        return;
-
-    await _notificationService.CreateAsync(
-        new CreateNotificationDto
-        {
-            UserId = approver.Id,
-            Title = "Approval Required",
-            Message =
-                $"Request \"{request.Title}\" requires your approval."
-        });
-
-    await _emailService.SendApprovalAssignedAsync(
-        approver.Email,
-        $"{approver.FirstName} {approver.LastName}",
-        request.Title);
-}
-
-private async Task NotifyRequesterAsync(
-    Request request,
-    string message)
-{
-    var requester =
-        await _userRepository
-            .GetByIdAsync(request.RequestedById);
-
-    if (requester == null)
-        return;
-
-    await _notificationService.CreateAsync(
-        new CreateNotificationDto
-        {
-            UserId = requester.Id,
-            Title = "Request Update",
-            Message = message
-        });
-
-    if (request.Status == RequestStatus.Approved)
+    private async Task NotifyApproverAsync(
+        Guid approverId,
+        Request request)
     {
-        await _emailService.SendRequestApprovedAsync(
-            requester.Email,
-            requester.FirstName,
-            request.Title);
-    }
-    else if (request.Status == RequestStatus.Rejected)
-    {
-        await _emailService.SendRequestRejectedAsync(
-            requester.Email,
-            requester.FirstName,
-            request.Title,
-            message);
-    }
-}
+        var approver =
+            await _userRepository.GetByIdAsync(approverId);
 
-private async Task WriteAuditAsync(
-    Request request,
-    string action,
-    Guid userId,
-    string comment)
-{
-    await _auditLogService.CreateAsync(
-        new CreateAuditLogDto
+        if (approver == null)
+            return;
+
+        // Always create notification in database
+        await _notificationService.CreateAsync(
+            new CreateNotificationDto
+            {
+                UserId = approver.Id,
+                Title = "Approval Required",
+                Message =
+                    $"Request \"{request.Title}\" requires your approval."
+            });
+
+        // Try to send email but don't fail if it doesn't work
+        try
         {
-            EntityName = nameof(Request),
-            EntityId = request.Id,
-            Action = action,
-            OldValue = string.Empty,
-            NewValue = comment,
-            PerformedById = userId
-        });
-}
-
-private async Task MoveToNextStepAsync(
-    Request request)
-{
-    var allSteps =
-        await LoadWorkflowStepsAsync(
-            request.WorkflowDefinitionId);
-
-    var currentApproval =
-        await _approvalStepRepository
-            .GetCurrentStepAsync(request.Id);
-
-    int completedOrder = 0;
-
-    if (currentApproval != null)
-        completedOrder = currentApproval.StepOrder;
-
-    var nextStep =
-        allSteps
-            .OrderBy(x => x.StepOrder)
-            .FirstOrDefault(x => x.StepOrder > completedOrder);
-
-    if (nextStep == null)
-    {
-        await CompleteWorkflowAsync(request);
-        return;
+            await _emailService.SendApprovalAssignedAsync(
+                approver.Email,
+                $"{approver.FirstName} {approver.LastName}",
+                request.Title);
+        }
+        catch (Exception ex)
+        {
+            // Log the error but don't throw - email is optional
+            Console.WriteLine($"[EMAIL WARNING] Could not send approval email to {approver.Email}: {ex.Message}");
+        }
     }
 
-    var approverId =
-        await DetermineApproverAsync(
-            nextStep,
-            request);
+    private async Task NotifyRequesterAsync(
+        Request request,
+        string message)
+    {
+        var requester =
+            await _userRepository
+                .GetByIdAsync(request.RequestedById);
 
-    await CreateApprovalStepAsync(
-        request,
-        nextStep,
-        approverId);
+        if (requester == null)
+            return;
 
-    await _requestRepository.UpdateAsync(request);
-    await _requestRepository.SaveChangesAsync();
+        // Always create notification in database
+        await _notificationService.CreateAsync(
+            new CreateNotificationDto
+            {
+                UserId = requester.Id,
+                Title = "Request Update",
+                Message = message
+            });
 
-    await NotifyApproverAsync(
-        approverId,
-        request);
+        // Try to send email but don't fail if it doesn't work
+        try
+        {
+            if (request.Status == RequestStatus.Approved)
+            {
+                await _emailService.SendRequestApprovedAsync(
+                    requester.Email,
+                    requester.FirstName,
+                    request.Title);
+            }
+            else if (request.Status == RequestStatus.Rejected)
+            {
+                await _emailService.SendRequestRejectedAsync(
+                    requester.Email,
+                    requester.FirstName,
+                    request.Title,
+                    message);
+            }
+        }
+        catch (Exception ex)
+        {
+            // Log the error but don't throw - email is optional
+            Console.WriteLine($"[EMAIL WARNING] Could not send notification email to {requester.Email}: {ex.Message}");
+        }
+    }
 
-    await WriteAuditAsync(
-        request,
-        "Moved To Next Step",
-        approverId,
-        $"Workflow moved to step {nextStep.StepOrder}");
-}
+    private async Task WriteAuditAsync(
+        Request request,
+        string action,
+        Guid userId,
+        string comment)
+    {
+        await _auditLogService.CreateAsync(
+            new CreateAuditLogDto
+            {
+                EntityName = nameof(Request),
+                EntityId = request.Id,
+                Action = action,
+                OldValue = string.Empty,
+                NewValue = comment,
+                PerformedById = userId
+            });
+    }
 
-private async Task CompleteWorkflowAsync(
-    Request request)
-{
-    request.Status = RequestStatus.Approved;
-    request.CurrentApprovalStepId = null;
+    private async Task MoveToNextStepAsync(Request request)
+    {
+        try
+        {
+            Console.WriteLine($"[MOVE] Moving to next step for request {request.Id}");
+            
+            var allSteps = await LoadWorkflowStepsAsync(request.WorkflowDefinitionId);
+            Console.WriteLine($"[MOVE] Found {allSteps.Count} total steps");
 
-    await _requestRepository.UpdateAsync(request);
-    await _requestRepository.SaveChangesAsync();
+            var currentApproval = await _approvalStepRepository.GetCurrentStepAsync(request.Id);
 
-    await NotifyRequesterAsync(
-        request,
-        $"Your request \"{request.Title}\" has been approved.");
+            int completedOrder = 0;
+            if (currentApproval != null)
+                completedOrder = currentApproval.StepOrder;
 
-    await WriteAuditAsync(
-        request,
-        "Workflow Completed",
-        request.RequestedById,
-        "Workflow completed successfully.");
-}
+            var nextStep = allSteps
+                .OrderBy(x => x.StepOrder)
+                .FirstOrDefault(x => x.StepOrder > completedOrder);
+
+            if (nextStep == null)
+            {
+                Console.WriteLine($"[MOVE] No more steps. Completing workflow.");
+                await CompleteWorkflowAsync(request);
+                return;
+            }
+
+            Console.WriteLine($"[MOVE] Next step: {nextStep.StepName} (Order: {nextStep.StepOrder})");
+
+            try
+            {
+                var approverId = await DetermineApproverAsync(nextStep, request);
+                Console.WriteLine($"[MOVE] Found approver: {approverId}");
+
+                await CreateApprovalStepAsync(request, nextStep, approverId);
+
+                await _requestRepository.UpdateAsync(request);
+                await _requestRepository.SaveChangesAsync();
+
+                await NotifyApproverAsync(approverId, request);
+
+                await WriteAuditAsync(request, "Moved To Next Step", approverId, $"Workflow moved to step {nextStep.StepOrder}");
+                
+                Console.WriteLine($"[MOVE] Successfully moved to step {nextStep.StepOrder}");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[MOVE ERROR] Could not find approver for step {nextStep.StepName}: {ex.Message}");
+                // Don't fail the approval, just log it
+                // The request stays in the current step until an approver is assigned
+                throw new Exception($"Cannot proceed to next step: No approver found for role '{nextStep.Role?.Name ?? "Unknown"}'");
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"[MOVE ERROR] {ex.Message}");
+            throw;
+        }
+    }
+
+    private async Task CompleteWorkflowAsync(
+        Request request)
+    {
+        request.Status = RequestStatus.Approved;
+        request.CurrentApprovalStepId = null;
+
+        await _requestRepository.UpdateAsync(request);
+        await _requestRepository.SaveChangesAsync();
+
+        await NotifyRequesterAsync(
+            request,
+            $"Your request \"{request.Title}\" has been approved.");
+
+        await WriteAuditAsync(
+            request,
+            "Workflow Completed",
+            request.RequestedById,
+            "Workflow completed successfully.");
+    }
 }

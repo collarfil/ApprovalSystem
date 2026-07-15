@@ -93,9 +93,11 @@ public async Task<List<ApprovalStep>>
             .ThenInclude(r => r.RequestedBy)
 
         .Include(x => x.AssignedToUser)
+        
+        .Include(x => x.Approver)  // ← ADD THIS LINE
 
         .Where(x =>
-            x.AssignedToUserId == approverId &&
+            (x.ApproverId == approverId || x.AssignedToUserId == approverId) &&  // ← MODIFY THIS LINE
             x.Status == ApprovalStatus.Pending)
 
         .OrderBy(x => x.Request.CreatedAt)

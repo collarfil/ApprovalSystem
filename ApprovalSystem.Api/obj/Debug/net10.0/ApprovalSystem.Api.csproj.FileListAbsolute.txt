@@ -1,11 +1,3 @@
-/Users/collinsfekix/projects/ApprovalSystem/ApprovalSystem.Api/obj/Debug/net10.0/ApprovalSystem.Api.csproj.AssemblyReference.cache
-/Users/collinsfekix/projects/ApprovalSystem/ApprovalSystem.Api/obj/Debug/net10.0/rpswa.dswa.cache.json
-/Users/collinsfekix/projects/ApprovalSystem/ApprovalSystem.Api/obj/Debug/net10.0/ApprovalSystem.Api.GeneratedMSBuildEditorConfig.editorconfig
-/Users/collinsfekix/projects/ApprovalSystem/ApprovalSystem.Api/obj/Debug/net10.0/ApprovalSystem.Api.AssemblyInfoInputs.cache
-/Users/collinsfekix/projects/ApprovalSystem/ApprovalSystem.Api/obj/Debug/net10.0/ApprovalSystem.Api.AssemblyInfo.cs
-/Users/collinsfekix/projects/ApprovalSystem/ApprovalSystem.Api/obj/Debug/net10.0/ApprovalSystem.Api.csproj.CoreCompileInputs.cache
-/Users/collinsfekix/projects/ApprovalSystem/ApprovalSystem.Api/obj/Debug/net10.0/ApprovalSystem.Api.MvcApplicationPartsAssemblyInfo.cs
-/Users/collinsfekix/projects/ApprovalSystem/ApprovalSystem.Api/obj/Debug/net10.0/ApprovalSystem.Api.MvcApplicationPartsAssemblyInfo.cache
 /Users/collinsfekix/projects/ApprovalSystem/ApprovalSystem.Api/bin/Debug/net10.0/appsettings.Development.json
 /Users/collinsfekix/projects/ApprovalSystem/ApprovalSystem.Api/bin/Debug/net10.0/appsettings.json
 /Users/collinsfekix/projects/ApprovalSystem/ApprovalSystem.Api/bin/Debug/net10.0/ApprovalSystem.Api.staticwebassets.endpoints.json
@@ -16,10 +8,11 @@
 /Users/collinsfekix/projects/ApprovalSystem/ApprovalSystem.Api/bin/Debug/net10.0/ApprovalSystem.Api.pdb
 /Users/collinsfekix/projects/ApprovalSystem/ApprovalSystem.Api/bin/Debug/net10.0/Azure.Core.dll
 /Users/collinsfekix/projects/ApprovalSystem/ApprovalSystem.Api/bin/Debug/net10.0/Azure.Identity.dll
+/Users/collinsfekix/projects/ApprovalSystem/ApprovalSystem.Api/bin/Debug/net10.0/BouncyCastle.Cryptography.dll
 /Users/collinsfekix/projects/ApprovalSystem/ApprovalSystem.Api/bin/Debug/net10.0/FluentValidation.dll
 /Users/collinsfekix/projects/ApprovalSystem/ApprovalSystem.Api/bin/Debug/net10.0/Humanizer.dll
+/Users/collinsfekix/projects/ApprovalSystem/ApprovalSystem.Api/bin/Debug/net10.0/MailKit.dll
 /Users/collinsfekix/projects/ApprovalSystem/ApprovalSystem.Api/bin/Debug/net10.0/Microsoft.AspNetCore.Authentication.JwtBearer.dll
-/Users/collinsfekix/projects/ApprovalSystem/ApprovalSystem.Api/bin/Debug/net10.0/Microsoft.AspNetCore.OpenApi.dll
 /Users/collinsfekix/projects/ApprovalSystem/ApprovalSystem.Api/bin/Debug/net10.0/Microsoft.Bcl.AsyncInterfaces.dll
 /Users/collinsfekix/projects/ApprovalSystem/ApprovalSystem.Api/bin/Debug/net10.0/Microsoft.Bcl.Cryptography.dll
 /Users/collinsfekix/projects/ApprovalSystem/ApprovalSystem.Api/bin/Debug/net10.0/Microsoft.Build.Framework.dll
@@ -47,6 +40,7 @@
 /Users/collinsfekix/projects/ApprovalSystem/ApprovalSystem.Api/bin/Debug/net10.0/Microsoft.OpenApi.dll
 /Users/collinsfekix/projects/ApprovalSystem/ApprovalSystem.Api/bin/Debug/net10.0/Microsoft.SqlServer.Server.dll
 /Users/collinsfekix/projects/ApprovalSystem/ApprovalSystem.Api/bin/Debug/net10.0/Microsoft.VisualStudio.SolutionPersistence.dll
+/Users/collinsfekix/projects/ApprovalSystem/ApprovalSystem.Api/bin/Debug/net10.0/MimeKit.dll
 /Users/collinsfekix/projects/ApprovalSystem/ApprovalSystem.Api/bin/Debug/net10.0/Mono.TextTemplating.dll
 /Users/collinsfekix/projects/ApprovalSystem/ApprovalSystem.Api/bin/Debug/net10.0/Newtonsoft.Json.dll
 /Users/collinsfekix/projects/ApprovalSystem/ApprovalSystem.Api/bin/Debug/net10.0/Npgsql.dll
@@ -154,6 +148,15 @@
 /Users/collinsfekix/projects/ApprovalSystem/ApprovalSystem.Api/bin/Debug/net10.0/ApprovalSystem.Application.pdb
 /Users/collinsfekix/projects/ApprovalSystem/ApprovalSystem.Api/bin/Debug/net10.0/ApprovalSystem.Infrastructure.pdb
 /Users/collinsfekix/projects/ApprovalSystem/ApprovalSystem.Api/bin/Debug/net10.0/ApprovalSystem.Core.pdb
+/Users/collinsfekix/projects/ApprovalSystem/ApprovalSystem.Api/obj/Debug/net10.0/ApprovalSystem.Api.csproj.AssemblyReference.cache
+/Users/collinsfekix/projects/ApprovalSystem/ApprovalSystem.Api/obj/Debug/net10.0/rpswa.dswa.cache.json
+/Users/collinsfekix/projects/ApprovalSystem/ApprovalSystem.Api/obj/Debug/net10.0/ApprovalSystem.Api.GeneratedMSBuildEditorConfig.editorconfig
+/Users/collinsfekix/projects/ApprovalSystem/ApprovalSystem.Api/obj/Debug/net10.0/ApprovalSystem.Api.AssemblyInfoInputs.cache
+/Users/collinsfekix/projects/ApprovalSystem/ApprovalSystem.Api/obj/Debug/net10.0/ApprovalSystem.Api.AssemblyInfo.cs
+/Users/collinsfekix/projects/ApprovalSystem/ApprovalSystem.Api/obj/Debug/net10.0/ApprovalSystem.Api.csproj.CoreCompileInputs.cache
+/Users/collinsfekix/projects/ApprovalSystem/ApprovalSystem.Api/obj/Debug/net10.0/ApprovalSystem.Api.MvcApplicationPartsAssemblyInfo.cs
+/Users/collinsfekix/projects/ApprovalSystem/ApprovalSystem.Api/obj/Debug/net10.0/ApprovalSystem.Api.MvcApplicationPartsAssemblyInfo.cache
+/Users/collinsfekix/projects/ApprovalSystem/ApprovalSystem.Api/obj/Debug/net10.0/ApprovalSystem.Api.sourcelink.json
 /Users/collinsfekix/projects/ApprovalSystem/ApprovalSystem.Api/obj/Debug/net10.0/rjimswa.dswa.cache.json
 /Users/collinsfekix/projects/ApprovalSystem/ApprovalSystem.Api/obj/Debug/net10.0/rjsmrazor.dswa.cache.json
 /Users/collinsfekix/projects/ApprovalSystem/ApprovalSystem.Api/obj/Debug/net10.0/rjsmcshtml.dswa.cache.json
@@ -169,7 +172,3 @@
 /Users/collinsfekix/projects/ApprovalSystem/ApprovalSystem.Api/obj/Debug/net10.0/ApprovalSystem.Api.pdb
 /Users/collinsfekix/projects/ApprovalSystem/ApprovalSystem.Api/obj/Debug/net10.0/ApprovalSystem.Api.genruntimeconfig.cache
 /Users/collinsfekix/projects/ApprovalSystem/ApprovalSystem.Api/obj/Debug/net10.0/ref/ApprovalSystem.Api.dll
-/Users/collinsfekix/projects/ApprovalSystem/ApprovalSystem.Api/bin/Debug/net10.0/BouncyCastle.Cryptography.dll
-/Users/collinsfekix/projects/ApprovalSystem/ApprovalSystem.Api/bin/Debug/net10.0/MailKit.dll
-/Users/collinsfekix/projects/ApprovalSystem/ApprovalSystem.Api/bin/Debug/net10.0/MimeKit.dll
-/Users/collinsfekix/projects/ApprovalSystem/ApprovalSystem.Api/obj/Debug/net10.0/ApprovalSystem.Api.sourcelink.json

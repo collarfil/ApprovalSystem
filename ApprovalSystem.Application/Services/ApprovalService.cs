@@ -36,23 +36,26 @@ public class ApprovalService : IApprovalService
     }
 
     public async Task<List<PendingApprovalDto>> GetPendingApprovalsAsync(Guid approverId)
-    {
-        var approvals = await _approvalStepRepository.GetPendingApprovalsAsync(approverId);
+{
+    var approvals = await _approvalStepRepository.GetPendingApprovalsAsync(approverId);
 
-        return approvals.Select(a => new PendingApprovalDto
-        {
-            ApprovalStepId = a.Id,
-            RequestId = a.RequestId,
-            Title = a.Request.Title,
-            Description = a.Request.Description,
-            Amount = a.Request.Amount,
-            Status = a.Request.Status.ToString(),
-            StepOrder = a.StepOrder,
-            RequestedById = a.Request.RequestedById,
-            RequestedByName = $"{a.Request.RequestedBy.FirstName} {a.Request.RequestedBy.LastName}",
-            AssignedToUserId = a.AssignedToUserId,
-            AssignedToName = $"{a.AssignedToUser.FirstName} {a.AssignedToUser.LastName}",
-            CreatedAt = a.Request.CreatedAt
-        }).ToList();
-    }
+    if (!approvals.Any())
+        return new List<PendingApprovalDto>();  // ← ADD THIS LINE
+
+    return approvals.Select(a => new PendingApprovalDto
+    {
+        ApprovalStepId = a.Id,
+        RequestId = a.RequestId,
+        Title = a.Request.Title,
+        Description = a.Request.Description,
+        Amount = a.Request.Amount,
+        Status = a.Request.Status.ToString(),
+        StepOrder = a.StepOrder,
+        RequestedById = a.Request.RequestedById,
+        RequestedByName = $"{a.Request.RequestedBy.FirstName} {a.Request.RequestedBy.LastName}",
+        AssignedToUserId = a.AssignedToUserId,
+        AssignedToName = $"{a.AssignedToUser.FirstName} {a.AssignedToUser.LastName}",
+        CreatedAt = a.Request.CreatedAt
+    }).ToList();
+}
 }
