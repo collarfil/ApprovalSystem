@@ -104,4 +104,11 @@ public async Task<List<ApprovalStep>>
 
         .ToListAsync();
 }
+public async Task<List<ApprovalStep>> GetAllApprovalsAsync()
+{
+    return await _context.ApprovalSteps
+        .Include(x => x.Request)
+        .Include(x => x.Approver)
+        .ToListAsync();
+}
 }
