@@ -1,0 +1,195 @@
+# ApprovalSystem — Configurable Approval Workflow Engine
+
+A configurable, multi-level approval workflow system built with **C#, ASP.NET Core, and Clean Architecture** to manage business approval processes, including application requests and employee leave requests.
+
+ApprovalSystem provides a structured approach to moving requests through defined approval levels, from the first approver to the final approval stage. Its reusable workflow approach is intended to support different business processes without requiring a completely separate approval implementation for every request type.
+
+> **Project status:** Under development and subject to ongoing testing and refinement.
+
+## Overview
+
+Many business processes require more than one person to review and approve a request. Without a structured workflow, organizations may struggle to track approval progress, manage responsibilities, and determine which stage a request has reached.
+
+ApprovalSystem addresses this problem through configurable, multi-level approval workflows. A request enters the approval process and progresses through its configured stages until it reaches a final decision.
+
+The project uses a layered .NET architecture to separate API endpoints, application logic, core business rules, and infrastructure concerns.
+
+## Key Features
+
+- **Configurable approval workflows:** Define approval stages for supported business processes.
+- **Multi-level approvals:** Move requests from the first approval level through subsequent levels to the final approval stage.
+- **Application request processing:** Route application requests through the configured approval process.
+- **Leave request approvals:** Support leave requests that require sequential approval decisions.
+- **Workflow progression:** Advance requests through the approval levels according to the configured process.
+- **Reusable approval engine:** Apply a common workflow approach to different business request types.
+- **Layered architecture:** Separate API, application, core, and infrastructure responsibilities for maintainability and extensibility.
+
+*The exact configuration options, authorization rules, rejection behavior, notifications, and audit capabilities should be documented as they are verified in the implementation.*
+
+## How the Workflow Works
+
+A typical approval process follows this sequence:
+
+```mermaid
+flowchart TD
+    A[Submit Application or Leave Request] --> B[First-Level Approval]
+    B --> C{Decision}
+    C -->|Approved| D[Next Approval Level]
+    C -->|Rejected| E[Request Rejected]
+    D --> F{Final-Level Decision}
+    F -->|Approved| G[Request Finally Approved]
+    F -->|Rejected| E
+```
+
+The number of approval levels and the applicable approval sequence depend on the workflow configuration supported by the system.
+
+The diagram illustrates the general process; the precise state transitions and rejection rules should be confirmed against the implemented code.
+
+## Technology Stack
+
+| Area | Technology |
+|---|---|
+| Programming language | C# |
+| Backend | ASP.NET Core |
+| Architecture | Clean Architecture / layered architecture |
+| Data access | Entity Framework Core, if configured in the solution |
+| Database | PostgreSQL |
+| Frontend | Angular, where included in the project setup |
+| Source control | Git and GitHub |
+
+## Architecture and Project Structure
+
+The solution is organized into separate projects:
+
+```text
+ApprovalSystem/
+├── ApprovalSystem.Api/
+├── ApprovalSystem.Application/
+├── ApprovalSystem.Core/
+├── ApprovalSystem.Infrastructure/
+├── api/
+├── ApprovalSystem.slnx
+└── README.md
+```
+
+### Project responsibilities
+
+**ApprovalSystem.Api**
+- Exposes the application's API endpoints.
+- Handles HTTP requests and responses.
+- Connects API operations to the application layer.
+
+**ApprovalSystem.Application**
+- Organizes application use cases and workflow operations.
+- Coordinates the execution of business processes.
+- Separates application behavior from infrastructure details.
+
+**ApprovalSystem.Core**
+- Contains the central business domain and rules.
+- Provides the foundation for approval-related behavior.
+
+**ApprovalSystem.Infrastructure**
+- Houses infrastructure implementations and external dependencies used by the application.
+- Supports persistence and other technical integrations configured in the solution.
+
+**api**
+- Review this directory to identify any API documentation, request collections, or supporting API resources included in the repository.
+
+This separation helps keep the approval process maintainable as additional request types and workflow requirements are introduced.
+
+## Getting Started
+
+### Prerequisites
+
+Before running the project, ensure you have the following, as applicable to the solution configuration:
+
+- Git
+- A .NET SDK compatible with the project's target framework
+- PostgreSQL
+- A suitable IDE, such as Visual Studio or Visual Studio Code
+- Node.js and npm if the Angular frontend is included in the development workflow
+
+### 1. Clone the repository
+
+```bash
+git clone https://github.com/collarfil/ApprovalSystem.git
+cd ApprovalSystem
+```
+
+### 2. Restore and build the .NET solution
+
+```bash
+dotnet restore ApprovalSystem.slnx
+dotnet build ApprovalSystem.slnx
+```
+
+### 3. Configure the database
+
+Create a PostgreSQL database for the application and configure the database connection using the configuration mechanism already implemented in the project.
+
+Do not commit real database passwords, API keys, or other secrets to source control.
+
+### 4. Configure and apply migrations
+
+Inspect the solution's existing Entity Framework Core configuration and migration history before applying database migrations. Use the appropriate migration commands for the actual `DbContext`, startup project, and infrastructure project.
+
+### 5. Run the API
+
+Use the configured API startup project and launch profile to run the application. Review the project's configuration and startup settings to determine the correct launch command and API address.
+
+### 6. Run the frontend
+
+If the Angular frontend is part of this repository, install its dependencies and run it using the scripts defined in its `package.json`.
+
+**Note:** Database names, environment-variable names, migration commands, API URLs, and frontend scripts must match the actual repository configuration. They should be added here after verification.
+
+## Testing
+
+Testing is important for an approval engine because requests must progress through the correct stages and reach valid final states.
+
+Recommended verification scenarios include:
+
+- Submitting an application request.
+- Submitting a leave request.
+- Progressing a request from the first approval level to subsequent levels.
+- Completing a request at the final approval level.
+- Testing rejection behavior at the applicable approval stages.
+- Confirming that requests follow their configured workflow.
+- Validating that invalid workflow transitions are handled correctly.
+- Checking persistence of request status and approval decisions.
+
+These are recommended verification scenarios, not a claim that automated tests for every scenario are already present.
+
+## Security and Reliability Considerations
+
+Before production deployment, verify that the application appropriately handles:
+
+- Authentication and authorization for approval actions.
+- Permissions to approve requests at each workflow level.
+- Validation of incoming requests and workflow transitions.
+- Secure storage of database credentials and other secrets.
+- Error handling and logging.
+- Database migration and backup procedures.
+- Tests for unauthorized approval attempts and invalid state transitions.
+
+## Current Development Focus
+
+The project is being refined toward a dependable, reusable approval workflow solution.
+
+Potential areas for further refinement include workflow configuration, validation of approval transitions, comprehensive automated tests, API documentation, frontend usability, and deployment documentation, depending on the features already completed.
+
+## Contributing
+
+This repository is maintained as a software engineering project demonstrating configurable approval workflows and layered .NET application design.
+
+Suggestions, issues, and improvements can be discussed through the repository's GitHub Issues and Pull Requests.
+
+## Author
+
+**Collins Aigbekhai**
+
+GitHub: [@collarfil](https://github.com/collarfil)
+
+---
+
+*ApprovalSystem — structured, configurable approval workflows for business processes.*
