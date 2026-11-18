@@ -53,13 +53,13 @@ builder.Services.AddSwaggerGen(c =>
     });
 });
 
-// CORS
+// CORS --- UPDATED TO INCLUDE PORT 5177 ---
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("ReactPolicy", policy =>
     {
         policy
-            .WithOrigins("http://localhost:5173")
+            .WithOrigins("http://localhost:5173", "http://localhost:5177")
             .AllowAnyHeader()
             .AllowAnyMethod()
             .AllowCredentials();

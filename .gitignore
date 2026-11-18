@@ -1,0 +1,14 @@
+[Bb]in/
+[Oo]bj/
+*.user
+.vs/
+.vscode/
+.idea/
+.DS_Store
+**/appsettings.json
+.env
+uploads/
+logs/
+*.log
+node_modules/
+out/
