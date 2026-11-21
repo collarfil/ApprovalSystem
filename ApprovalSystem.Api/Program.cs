@@ -53,13 +53,19 @@ builder.Services.AddSwaggerGen(c =>
     });
 });
 
-// CORS --- UPDATED TO INCLUDE PORT 5177 ---
+// CORS --- UPDATED TO ALLOW LOCALHOST AND ALL VERCEL SUBDOMAINS ---
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("ReactPolicy", policy =>
     {
         policy
-            .WithOrigins("http://localhost:5173", "http://localhost:5177", "https://approval-system-ui-seven.vercel.app")
+            .SetIsOriginAllowed(origin =>
+            {
+                if (string.IsNullOrWhiteSpace(origin)) return false;
+                var uri = new Uri(origin);
+                return uri.Host == "localhost" 
+                    || uri.Host.EndsWith(".vercel.app", StringComparison.OrdinalIgnoreCase);
+            })
             .AllowAnyHeader()
             .AllowAnyMethod()
             .AllowCredentials();
@@ -87,7 +93,6 @@ builder.Services.AddScoped<IWorkflowDefinitionService, WorkflowDefinitionService
 builder.Services.AddScoped<IWorkflowEngine, WorkflowEngine>();
 builder.Services.AddScoped<IWorkflowRuleService, WorkflowRuleService>();
 builder.Services.AddScoped<IWorkflowStepDefinitionService, WorkflowStepDefinitionService>();
-// Add this to your service registrations
 builder.Services.AddScoped<IReportService, ReportService>();
 
 // Repositories
@@ -150,6 +155,10 @@ app.UseRouting();
 app.UseCors("ReactPolicy");
 app.UseAuthentication();
 app.UseAuthorization();
+
+// Health check endpoint for UptimeRobot (₦0 keep-alive)
+app.MapGet("/health", () => Results.Ok(new { Status = "Healthy", Timestamp = DateTime.UtcNow }));
+
 app.MapControllers();
 
 app.Run();
