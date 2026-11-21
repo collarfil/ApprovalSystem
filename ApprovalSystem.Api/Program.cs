@@ -160,24 +160,6 @@ app.UseAuthorization();
 app.MapGet("/health", () => Results.Ok(new { Status = "Healthy", Timestamp = DateTime.UtcNow }));
 
 app.MapControllers();
-// Seed default Demo Account on startup if database is empty
-using (var scope = app.Services.CreateScope())
-{
-    var db = scope.ServiceProvider.GetRequiredService<ApprovalSystem.Infrastructure.Persistence.ApprovalDbContext>();
-    
-    if (!db.Users.Any())
-    {
-        var authService = scope.ServiceProvider.GetRequiredService<IAuthService>();
-        // Uses your exact Register method so password hashing matches 100%!
-        await authService.RegisterAsync(new ApprovalSystem.Application.DTOs.Auth.RegisterRequestDto
-        {
-            FirstName = "Collins",
-            LastName = "Demo",
-            Email = "demo@approvalsystem.com",
-            Password = "Demo@12345"
-        });
-    }
-}
 
 
 app.Run();
