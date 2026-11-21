@@ -59,7 +59,7 @@ builder.Services.AddCors(options =>
     options.AddPolicy("ReactPolicy", policy =>
     {
         policy
-            .WithOrigins("http://localhost:5173", "http://localhost:5177")
+            .WithOrigins("http://localhost:5173", "http://localhost:5177", "https://approval-system-ui-seven.vercel.app")
             .AllowAnyHeader()
             .AllowAnyMethod()
             .AllowCredentials();
