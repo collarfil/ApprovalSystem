@@ -160,5 +160,47 @@ app.UseAuthorization();
 app.MapGet("/health", () => Results.Ok(new { Status = "Healthy", Timestamp = DateTime.UtcNow }));
 
 app.MapControllers();
+// Seed default Demo Account on startup if database is empty
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<ApprovalSystem.Infrastructure.Persistence.ApprovalDbContext>();
+    
+    if (!db.Users.Any())
+    {
+        var dept = new ApprovalSystem.Core.Entities.Department
+        {
+            Id = Guid.NewGuid(),
+            Name = "Operations & Finance",
+            Description = "Default demo department",
+            IsActive = true
+        };
+        db.Departments.Add(dept);
+
+        var adminRole = new ApprovalSystem.Core.Entities.Role
+        {
+            Id = Guid.NewGuid(),
+            Name = "Admin",
+            Description = "Full system administrator",
+            IsActive = true
+        };
+        db.Roles.Add(adminRole);
+
+        var demoUser = new ApprovalSystem.Core.Entities.User
+        {
+            Id = Guid.NewGuid(),
+            FirstName = "Collins",
+            LastName = "Demo",
+            Email = "demo@approvalsystem.com",
+            // IMPORTANT: Replace this line with the exact password hashing method used in your AuthService.cs!
+            Password = BCrypt.Net.BCrypt.HashPassword("Demo@12345"),
+            IsActive = true,
+            DepartmentId = dept.Id
+        };
+        db.Users.Add(demoUser);
+        db.UserRoles.Add(new ApprovalSystem.Core.Entities.UserRole { UserId = demoUser.Id, RoleId = adminRole.Id });
+
+        await db.SaveChangesAsync();
+    }
+}
 
 app.Run();
