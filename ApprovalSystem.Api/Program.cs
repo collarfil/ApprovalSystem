@@ -167,40 +167,17 @@ using (var scope = app.Services.CreateScope())
     
     if (!db.Users.Any())
     {
-        var dept = new ApprovalSystem.Core.Entities.Department
+        var authService = scope.ServiceProvider.GetRequiredService<IAuthService>();
+        // Uses your exact Register method so password hashing matches 100%!
+        await authService.RegisterAsync(new ApprovalSystem.Application.DTOs.Auth.RegisterRequestDto
         {
-            Id = Guid.NewGuid(),
-            Name = "Operations & Finance",
-            Description = "Default demo department",
-            IsActive = true
-        };
-        db.Departments.Add(dept);
-
-        var adminRole = new ApprovalSystem.Core.Entities.Role
-        {
-            Id = Guid.NewGuid(),
-            Name = "Admin",
-            Description = "Full system administrator",
-            IsActive = true
-        };
-        db.Roles.Add(adminRole);
-
-        var demoUser = new ApprovalSystem.Core.Entities.User
-        {
-            Id = Guid.NewGuid(),
             FirstName = "Collins",
             LastName = "Demo",
             Email = "demo@approvalsystem.com",
-            // IMPORTANT: Replace this line with the exact password hashing method used in your AuthService.cs!
-            Password = BCrypt.Net.BCrypt.HashPassword("Demo@12345"),
-            IsActive = true,
-            DepartmentId = dept.Id
-        };
-        db.Users.Add(demoUser);
-        db.UserRoles.Add(new ApprovalSystem.Core.Entities.UserRole { UserId = demoUser.Id, RoleId = adminRole.Id });
-
-        await db.SaveChangesAsync();
+            Password = "Demo@12345"
+        });
     }
 }
+
 
 app.Run();
